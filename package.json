@@ -1,0 +1,16 @@
+{
+  "name": "funix-lab",
+  "version": "1.0.0",
+  "description": "Complete Nodejs Funix Learning ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
+  },
+  "author": "Trong Nguyen H.",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
