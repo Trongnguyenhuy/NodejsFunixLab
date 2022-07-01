@@ -1,3 +1,4 @@
+const { request } = require("express");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -64,4 +65,10 @@ exports.getProducts = (req, res, next) => {
       path: "/admin/products",
     });
   });
+};
+
+exports.postDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  Product.delete(productId);
+  res.redirect('/products');
 };
