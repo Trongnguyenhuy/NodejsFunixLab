@@ -20,7 +20,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/admin", adminRouteres);
 app.use(shopRouteres);
 
-db.execute('SELECT * FROM products');
+db.execute("SELECT * FROM products")
+  .then(result => {
+    console.log(result[0]);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 app.use(errorControllers.get404);
 
