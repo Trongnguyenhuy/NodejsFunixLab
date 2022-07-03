@@ -110,18 +110,47 @@ exports.getOrders = (req, res, next) => {
   });
 };
 
+exports.postOrders = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts();
+    })
+    .then((products) => {
+      return req.user
+        .createOrder()
+        .then((order) => {
+          return order.addProducts(
+            products.map((product) => {
+              product.orderItem = { qty: product.cartItem.qty };
+              return product;
+            })
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .then((result) => {
+      res.redirect('/orders');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 exports.postCartDeleteItem = (req, res, next) => {
   const prodId = req.body.productId;
   req.user
     .getCart()
     .then((cart) => {
-      return cart.getProducts({ where: { id: prodId }  });
+      return cart.getProducts({ where: { id: prodId } });
     })
-    .then(products => {
+    .then((products) => {
       const product = products[0];
       return product.cartItem.destroy();
     })
-    .then( result => {
+    .then((result) => {
       res.redirect("/cart");
     })
     .catch((err) => {
