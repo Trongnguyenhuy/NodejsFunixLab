@@ -14,12 +14,14 @@ exports.postAddProduct = (req, res, next) => {
   const imgUrl = req.body.imgUrl;
   const price = req.body.price;
   const descriptions = req.body.descriptions;
-  Product.create({
-    title: title,
-    price: price,
-    imgUrl: imgUrl,
-    descriptions: descriptions,
-  })
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imgUrl: imgUrl,
+      descriptions: descriptions,
+      userId: req.user.id,
+    })
     .then((result) => {
       console.log(result.dataValues);
       res.redirect("/admin/products");
@@ -93,11 +95,11 @@ exports.postDeleteProduct = (req, res, next) => {
     .then((product) => {
       product.destroy();
     })
-    .then(result => {
+    .then((result) => {
       console.log(result);
       res.redirect("/admin/products");
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
