@@ -20,7 +20,10 @@ exports.postAddProduct = (req, res, next) => {
     imgUrl: imgUrl,
     descriptions: descriptions,
   })
-    .then((result) => console.log(result))
+    .then((result) => {
+      console.log(result.dataValues);
+      res.redirect("/admin/products");
+    })
     .catch((err) => console.log(err));
 };
 
@@ -63,10 +66,10 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then(([rows, fieldData]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("admin/products", {
-        prods: rows,
+        prods: products,
         pageTitle: "Admin Products",
         path: "/admin/products",
       });
