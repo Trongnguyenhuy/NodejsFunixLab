@@ -1,3 +1,5 @@
+const getDb = require('../util/database').getDb;
+
 class Product {
   constructor(title, imgUrl, price, descriptions){
     this.title = title;
@@ -7,7 +9,7 @@ class Product {
   }
 
   save(){
-    
+
   }
 }
 
