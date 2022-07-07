@@ -13,7 +13,7 @@ const mongoConnect = (callback) => {
     })
     .catch((err) => {
       console.log(err);
-      threw(err);
+      throw(err);
     });
 };
 
@@ -21,7 +21,7 @@ const getDb =() => {
   if (_db) {
     return _db;
   }
-  threw('No database connection found!');
+  throw('No database connection found!');
 
 }
 

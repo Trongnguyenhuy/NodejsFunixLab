@@ -4,8 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const adminRouteres = require("./routes/admin");
-// const shopRouteres = require("./routes/shop");
-// const errorControllers = require("./controllers/error");
+const shopRouteres = require("./routes/shop");
+const errorControllers = require("./controllers/error");
 const mongoConnect = require('./util/database').mongoConnect;
 
 const app = express();
@@ -29,9 +29,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/admin", adminRouteres);
-// app.use(shopRouteres);
+app.use(shopRouteres);
 
-// app.use(errorControllers.get404);
+app.use(errorControllers.get404);
 
 mongoConnect(client => {
   app.listen(3000);
