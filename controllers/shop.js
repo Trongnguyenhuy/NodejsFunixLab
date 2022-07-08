@@ -82,7 +82,7 @@ exports.getCheckout = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({ include: ["products"] })
+    .getOrders()
     .then((order) => {
       res.render("shop/orders", {
         path: "/orders",
