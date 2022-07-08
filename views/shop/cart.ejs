@@ -13,7 +13,7 @@
                             <h2>Quantity:<%= p.quantity %>👌</h2>
                             <form action="/cart-delete-item" method="POST">
                                 <button class="btn danger" type="submit">Delete</button>
-                                <input type="hidden" name="productId" value="<%= p._id %>" >
+                                <input type="hidden" name="productId" value="<%= p.productId._id %>" >
                             </form>
                         </li>
                     <% }) %>
