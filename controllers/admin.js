@@ -1,4 +1,3 @@
-const { request } = require("express");
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -17,7 +16,8 @@ exports.postAddProduct = (req, res, next) => {
 
   const product = new Product(title, imgUrl, price, descriptions);
 
-  product.save()
+  product
+    .save()
     .then((result) => {
       // console.log(result.dataValues);
       res.redirect("/admin/products");
@@ -33,12 +33,8 @@ exports.getEditProduct = (req, res, next) => {
   }
 
   const prodId = req.params.productId;
-  req.user
-    .getProducts({ where: { id: prodId } })
-    // Product.findByPk(prodId)
-    .then((products) => {
-      const product = products[0];
-
+  Product.findById(prodId)
+    .then((product) => {
       if (!product) {
         return res.redirect("/");
       }
@@ -58,14 +54,15 @@ exports.postEditProduct = (req, res, next) => {
   const updatedimgUrl = req.body.imgUrl;
   const updatedprice = req.body.price;
   const updateddescriptions = req.body.descriptions;
-  Product.findByPk(prodId)
-    .then((product) => {
-      product.title = updatedtitle;
-      product.price = updatedprice;
-      product.descriptions = updateddescriptions;
-      product.imgUrl = updatedimgUrl;
-      return product.save();
-    })
+  const product = new Product(
+    updatedtitle,
+    updatedimgUrl,
+    updatedprice,
+    updateddescriptions,
+    prodId
+  );
+  product
+    .save()
     .then((result) => {
       console.log(result);
       res.redirect("/admin/products");
@@ -78,7 +75,7 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
   // req.user
   //   .getProducts()
-    Product.fetchAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
@@ -93,7 +90,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findByPk(productId)
+  Product.findById(productId)
     .then((product) => {
       product.destroy();
     })
