@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Order = require("../models/order");
+const user = require("../models/user");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -116,6 +117,9 @@ exports.postOrders = (req, res, next) => {
       });
 
       return order.save();
+    })
+    .then(result => {
+      req.user.clearCart();
     })
     .then((result) => {
       res.redirect("/orders");
