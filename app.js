@@ -7,7 +7,7 @@ const adminRouteres = require("./routes/admin");
 const shopRouteres = require("./routes/shop");
 const errorControllers = require("./controllers/error");
 const mongoose = require("mongoose");
-// const User = require("./models/user");
+const User = require("./models/user");
 
 const app = express();
 
@@ -17,16 +17,17 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use((req, res, next) => {
-//   User.findById("62c78646ed47227b0810da49")
-//     .then((user) => {
-//       req.user = new User(user.username, user.email, user._id, user.cart);
-//       next();
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// });
+app.use((req, res, next) => {
+  User.findById("62c81ad3e16f92b07173c80a")
+    .then((user) => {
+      // console.log(user);
+      req.user = user;
+      next();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
 
 app.use("/admin", adminRouteres);
 app.use(shopRouteres);
@@ -39,6 +40,18 @@ mongoose
   )
   .then((result) => {
     // console.log(result);
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: "TrongNguyen",
+          email: "trong@test.com",
+          cart: {
+            items: [],
+          },
+        });
+        user.save();
+      }
+    });
     app.listen(3000);
   })
   .catch((err) => {

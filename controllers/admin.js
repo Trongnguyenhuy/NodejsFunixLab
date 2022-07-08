@@ -67,6 +67,7 @@ exports.postEditProduct = (req, res, next) => {
       return product.save();
     })
     .then((result) => {
+      console.log('UPDATED PRODUCT !');
       res.redirect("/admin/products");
     })
     .catch((err) => {
@@ -77,7 +78,6 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then((products) => {
-      console.log(products);
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",
@@ -91,9 +91,9 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteById(productId)
+  Product.findByIdAndRemove(productId)
     .then((result) => {
-      console.log(result);
+      console.log('PRODUCT REMOVED !');
       res.redirect("/admin/products");
     })
     .catch((err) => {
