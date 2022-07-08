@@ -37,7 +37,7 @@ class Product {
       .find()
       .toArray()
       .then((products) => {
-        console.log(products);
+        console.log('fetch all products successfully !');
         return products;
       })
       .catch((err) => {
@@ -52,7 +52,7 @@ class Product {
       .find({ _id: new mongodb.ObjectId(prodId) })
       .next()
       .then((product) => {
-        console.log(product);
+        console.log('find by id successfully !');
         return product;
       })
       .catch((err) => {
