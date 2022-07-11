@@ -89,6 +89,7 @@ exports.getCheckout = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
   Order.find({ "user.userId": req.user._id })
     .then((order) => {
+      // console.log(order[0].products);
       res.render("shop/orders", {
         path: "/orders",
         pageTitle: "Your Orders",

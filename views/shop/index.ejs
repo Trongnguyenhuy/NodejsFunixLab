@@ -14,17 +14,18 @@
                             <h1 class="product__title"><%= product.title %></h1>
                         </header>
                         <div class="card__image">
-                            <a href="/products/<%= product._id %>">
-                                <img src="<%= product.imgUrl %>"
+                            <img src="<%= product.imgUrl %>"
                                 alt="<%= product.title %>">
-                            </a>
                         </div>
                         <div class="card__content">
                             <h2 class="product__price">$<%= product.price %></h2>
-                            <p class="product__description"><%= product.description %></p>
+                            <p class="product__description"><%= product.descriptions %></p>
                         </div>
                         <div class="card__actions">
-                            <%- include('../includes/add-to-cart.ejs', { product: product}) %>
+                            <a href="/products/<%= product._id %>" class="btn">Details</a>
+                            <% if (isAuthenticated) { %>
+                                <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                            <% } %>
                         </div>
                     </article>
                 <% } %>
