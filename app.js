@@ -4,12 +4,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const MongoDbStore = require("connect-mongodb-session")(session);
+const mongoose = require("mongoose");
 
 const adminRouteres = require("./routes/admin");
 const shopRouteres = require("./routes/shop");
 const authRouteres = require("./routes/auth");
 const errorControllers = require("./controllers/error");
-const mongoose = require("mongoose");
 const User = require("./models/user");
 
 const MONGODB_URI =
@@ -18,7 +18,7 @@ const MONGODB_URI =
 const app = express();
 const store = new MongoDbStore({
   uri: MONGODB_URI,
-  collection: 'sessions'
+  collection: "sessions",
 });
 
 app.set("view engine", "ejs");
@@ -32,21 +32,9 @@ app.use(
     secret: "my secret",
     resave: false,
     saveUninitialized: false,
-    store: store
+    store: store,
   })
 );
-
-app.use((req, res, next) => {
-  User.findById("62c841426cfdc0e80304db02")
-    .then((user) => {
-      // console.log(user);
-      req.user = user;
-      next();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-});
 
 app.use("/admin", adminRouteres);
 app.use(shopRouteres);
