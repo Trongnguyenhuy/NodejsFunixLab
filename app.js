@@ -55,6 +55,12 @@ app.use((req, res, next) => {
   });
 });
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated=  req.session.isLoggedIn;
+  res.locals.csrfToken= req.csrfToken()
+  next();
+});
+
 app.use("/admin", adminRouteres);
 app.use(shopRouteres);
 app.use(authRouteres);
