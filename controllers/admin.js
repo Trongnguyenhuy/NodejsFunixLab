@@ -1,11 +1,15 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect("/login");
+  }
+
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
-    editting: false,
-    isAuthenticated: req.session.isLoggedIn
+    editing: false,
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -20,7 +24,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     imgUrl: imgUrl,
     descriptions: descriptions,
-    userId: req.user
+    userId: req.user,
   });
 
   product
@@ -47,9 +51,9 @@ exports.getEditProduct = (req, res, next) => {
       res.render("admin/edit-product", {
         pageTitle: "Edit Product",
         path: "/admin/edit-product",
-        editting: editMode,
+        editing: editMode,
         product: product,
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -70,7 +74,7 @@ exports.postEditProduct = (req, res, next) => {
       return product.save();
     })
     .then((result) => {
-      console.log('UPDATED PRODUCT !');
+      console.log("UPDATED PRODUCT !");
       res.redirect("/admin/products");
     })
     .catch((err) => {
@@ -88,7 +92,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "Admin Products",
         path: "/admin/products",
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => {
@@ -100,7 +104,7 @@ exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
   Product.findByIdAndRemove(productId)
     .then((result) => {
-      console.log('PRODUCT REMOVED !');
+      console.log("PRODUCT REMOVED !");
       res.redirect("/admin/products");
     })
     .catch((err) => {
