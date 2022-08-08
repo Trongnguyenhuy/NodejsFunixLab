@@ -13,7 +13,11 @@ router.post("/logout", authControllers.postLogout);
 
 router.get("/signup", authControllers.getSignup);
 
-router.post("/signup", check('email').isEmail(), authControllers.postSignup);
+router.post(
+  "/signup",
+  check("email").isEmail().withMessage("Please enter a valid email."),
+  authControllers.postSignup
+);
 
 router.get("/reset", authControllers.getReset);
 
@@ -21,6 +25,6 @@ router.post("/reset", authControllers.postReset);
 
 router.get("/reset/:token", authControllers.getNewPassword);
 
-router.post('/new-password', authControllers.postNewPassword);
+router.post("/new-password", authControllers.postNewPassword);
 
 module.exports = router;
