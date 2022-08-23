@@ -44,38 +44,45 @@ app.use(csrfProtection);
 app.use(flash());
 
 app.use((req, res, next) => {
-  if(!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-  .then(user =>{
-    if(!user) {
-      return next();
-    }
-    req.user = user;
-    next();
-  })
-  .catch((error) => {
-    throw new Error(error);
-  });
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use((req, res, next) => {
-  res.locals.isAuthenticated=  req.session.isLoggedIn;
-  res.locals.csrfToken= req.csrfToken()
-  next();
+  // throw new Error('Dummy Errors');
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    // throw new Error('Dummy Errors')
+    .then((user) => {
+      if (!user) {
+        return next();
+      }
+      req.user = user;
+      next();
+    })
+    .catch((error) => {
+      return next(new Error(error));
+    });
 });
+
 
 app.use("/admin", adminRouteres);
 app.use(shopRouteres);
 app.use(authRouteres);
 
-app.get("/500",errorControllers.get500);
+app.get("/500", errorControllers.get500);
 
 app.use(errorControllers.get404);
 
 app.use((error, req, res, next) => {
-  res.redirect("/500");
+  // res.redirect("/500");
+  res.status(500).render("500", {
+    pageTitle: "Error!",
+    path: "/500",
+  });
 });
 
 mongoose
