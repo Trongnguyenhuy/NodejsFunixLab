@@ -8,7 +8,7 @@ const MongoDbStore = require("connect-mongodb-session")(session);
 const mongoose = require("mongoose");
 const csrf = require("csurf");
 const flash = require("connect-flash");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const adminRouteres = require("./routes/admin");
 const shopRouteres = require("./routes/shop");
@@ -31,15 +31,29 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, uuidv4() + '-' + file.originalname);
+    cb(null, uuidv4() + "-" + file.originalname);
   },
 });
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage }).single("image"));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
