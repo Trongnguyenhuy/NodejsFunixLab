@@ -40,6 +40,7 @@ exports.postAuth = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const errors = validationResult(req);
+  let activeUser;
 
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/login", {
@@ -52,26 +53,29 @@ exports.postAuth = (req, res, next) => {
       },
       validationErrors: errors.array(),
     });
+  } else {
+    User.findOne({ email: email })
+      .then((user) => {
+        activeUser = user;
+        return bcrypt.compare(password, user.password);
+      })
+      .then((doMatch) => {
+        if (doMatch) {
+          req.session.isLoggedIn = true;
+          req.session.user = activeUser;
+          return req.session.save((err) => {
+            console.log(err);
+            res.redirect("/");
+          });
+        }
+        req.flash("error", "Invalid email or password.");
+        return res.redirect("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.redirect("/login");
+      });
   }
-
-  bcrypt
-    .compare(password, user.password)
-    .then((doMatch) => {
-      if (doMatch) {
-        req.session.isLoggedIn = true;
-        req.session.user = user;
-        return req.session.save((err) => {
-          console.log(err);
-          res.redirect("/");
-        });
-      }
-      req.flash("error", "Invalid email or password.");
-      return res.redirect("/login");
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.redirect("/login");
-    });
 };
 
 exports.postLogout = (req, res) => {
