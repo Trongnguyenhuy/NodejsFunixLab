@@ -10,16 +10,31 @@ const router = express.Router();
 
 router.get("/add-product", isAuth, adminControllers.getAddProduct);
 
-router.post("/add-product",[
-    body("title").isString().isLength({min: 3}).trim(),
+router.post(
+  "/add-product",
+  [
+    body("title").isString().isLength({ min: 3 }).trim(),
     body("imgUrl").isURL(),
     body("price").isFloat(),
-    body("descriptions").isLength({ min: 5, max:400 }).trim()
-], isAuth, adminControllers.postAddProduct);
+    body("descriptions").isLength({ min: 5, max: 400 }).trim(),
+  ],
+  isAuth,
+  adminControllers.postAddProduct
+);
 
 router.get("/edit-product/:productId", isAuth, adminControllers.getEditProduct);
 
-router.post("/edit-product", isAuth, adminControllers.postEditProduct);
+router.post(
+  "/edit-product",
+  [
+    body("title").isString().isLength({ min: 3 }).trim(),
+    body("imgUrl").isURL(),
+    body("price").isFloat(),
+    body("descriptions").isLength({ min: 5, max: 400 }).trim(),
+  ],
+  isAuth,
+  adminControllers.postEditProduct
+);
 
 router.post("/delete-product", isAuth, adminControllers.postDeleteProduct);
 
