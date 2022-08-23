@@ -70,7 +70,9 @@ app.use("/admin", adminRouteres);
 app.use(shopRouteres);
 app.use(authRouteres);
 
-app.use(errorControllers.get404);
+app.get('/404',errorControllers.get404);
+
+app.get("/500",errorControllers.get500);
 
 mongoose
   .connect(MONGODB_URI)
