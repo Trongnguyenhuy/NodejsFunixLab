@@ -1,6 +1,9 @@
+const fs = require('fs');
+const path = require('path');
+
 const Product = require("../models/product");
 const Order = require("../models/order");
-const user = require("../models/user");
+
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -156,3 +159,17 @@ exports.postCartDeleteItem = (req, res, next) => {
       return next(error);
     });
 };
+
+
+exports.getInvoices = (req, res, next) => {
+  const orderId = req.params.orderId;
+  const invoiceName = "invoice-" + orderId + ".pdf";
+  const invoicePath = path.join("data", "invoices", invoiceName);
+
+  fs.readFile(invoicePath,(err, data) => {
+    if (err) {
+      next(err);
+    }
+    res.send(data);
+  });
+}
