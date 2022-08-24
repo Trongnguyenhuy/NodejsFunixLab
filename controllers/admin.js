@@ -2,6 +2,8 @@ const { validationResult } = require("express-validator/check");
 const mongoose = require("mongoose");
 const Product = require("../models/product");
 
+const flieHelper = require("../util/fileHelper");
+
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
@@ -146,6 +148,7 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedprice;
       product.descriptions = updateddescriptions;
       if (image) {
+        flieHelper.deleteFile(product.imgUrl);
         product.imgUrl = image.path;
       }
       return product.save().then((result) => {
@@ -181,7 +184,14 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteOne({ _id: productId, userId: req.user._id })
+  Product.findById(productId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("Product not found!"));
+      }
+      flieHelper.deleteFile(product.imgUrl);
+      return Product.deleteOne({ _id: productId, userId: req.user._id });
+    })
     .then((result) => {
       console.log("PRODUCT REMOVED !");
       res.redirect("/admin/products");
