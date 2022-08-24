@@ -43,15 +43,27 @@ exports.getProduct = (req, res, next) => {
 
 exports.getIndex = (req, res, next) => {
   const page = req.query.page;
+  let totalItems = 0;
 
   Product.find()
-    .skip((page - 1) * ITEMS_PER_PAGE)
-    .limit(ITEMS_PER_PAGE)
+    .countDocuments()
+    .then((numberProducts) => {
+      totalItems = numberProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE*page < totalItems,
+        hasPreviousPage: page > 1,
+        lastPage: Math.ceil(totalItems/ITEMS_PER_PAGE),
+        previousPage: page - 1,
+        nextPage: page + 1,
       });
     })
     .catch((err) => {
@@ -198,26 +210,30 @@ exports.getInvoices = (req, res, next) => {
         underline: true,
       });
 
-      pdfdoc.fontSize(14).text("-------------------------------------------------------------------");
+      pdfdoc
+        .fontSize(14)
+        .text(
+          "-------------------------------------------------------------------"
+        );
 
       let totalPrice = 0;
 
       order.products.forEach((prod) => {
-
         totalPrice += prod.productData.price * prod.quantity;
 
-        pdfdoc
-          .text(
-            prod.productData.title +
-              " - " +
-              prod.quantity +
-              " x " +
-              "$ " +
-              prod.productData.price
-          );
+        pdfdoc.text(
+          prod.productData.title +
+            " - " +
+            prod.quantity +
+            " x " +
+            "$ " +
+            prod.productData.price
+        );
       });
 
-      pdfdoc.text("-------------------------------------------------------------------");
+      pdfdoc.text(
+        "-------------------------------------------------------------------"
+      );
       pdfdoc.fontSize(20).text("Total Price: $ " + totalPrice);
 
       pdfdoc.end();
